@@ -1,0 +1,86 @@
+﻿@model IEnumerable<renter.Models.Property>
+@{
+    string[] PropertyType = { "Apartment", "Independent Villa", "Farm House", "Independent Floor" };
+    string[] Furnishing = { "Unfurnished", "Furnished", "Semifurnished" };
+    string[] BHK = { "1BHK", "2BHK", "3BHK" };
+}
+
+
+<partial name="_toster" />
+
+<div class="text-center  min-vh-100" id="homecon">
+    <div class="mx-auto" style="padding-top:200px">
+        <h1>My First Bootstrap Page</h1>
+    </div>
+    <div class="mx-auto" style="padding-top: 150px;">
+        <button class="btn custom-btn2" onclick="scrollWin()">Get Start</button>
+    </div>
+</div>
+
+<hr />
+
+<div class="container">
+    <div class="text-center">
+        <h1 class="custom-text">Our Property's</h1>
+        <select class="BHK" id="multiselect-BHK" multiple>
+            @for (int i = 1; i < 4; i++)
+            {
+                <option value="@i">@i BHK</option>
+            }
+        </select>
+        <select class="Furnishing" id="multiselect-Furnishing" multiple>
+            @foreach (var i in Furnishing)
+            {
+                <option value="@i">@i</option>
+
+            }
+        </select>
+        <select class="PropertyType" id="multiselect-PropertyType" multiple>
+            @foreach (var i in PropertyType)
+            {
+                <option value="@i">@i</option>
+
+            }
+        </select>
+        <button class="btn custom-btn search" data-filter="all"><i class="fas fa-search"></i>&nbsp; search</button>
+    </div>
+    <br />
+    <div class="row" id="myList">
+        @foreach (var prod in Model)
+        {
+            <partial name="_IndividualProductCard" model="prod" />
+        }
+    </div>
+    <button class="btn custom-btn " id="showLess"><i class="fas fa-arrow-left"></i>Previous</button>
+    <button class="btn custom-btn float-right" id="loadMore"><i class="fas fa-arrow-right"></i> Next</button>
+</div>
+
+
+<hr style="margin-top: 3rem;" />
+<partial name="_service" />
+
+<hr />
+<partial name="_testimonial" />
+
+@section Scripts{
+    <script src="~/js/filter.js"></script>
+    <script src="~/js/load.js"></script>
+    <script>
+        function scrollWin() {
+            window.scrollTo(0, 700);
+        }
+        $(document).ready(function () {
+            $("#testimonial-slider").owlCarousel({
+                items: 1,
+                itemsDesktop: [1000, 1],
+                itemsDesktopSmall: [979, 1],
+                itemsTablet: [768, 1],
+                pagination: true,
+                navigation: true,
+                navigationText: ["", ""],
+                slideSpeed: 1000,
+                autoPlay: true
+            });
+        });
+    </script>
+}

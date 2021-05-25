@@ -1,0 +1,134 @@
+﻿<style>
+    #testimonial-slider {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    
+
+    .testimonial .title {
+        font-size: 22px;
+        font-weight: bold;
+        text-transform: capitalize;
+        margin-top: 40px;
+        letter-spacing: 2px;
+    }
+
+    .owl-buttons {
+        width: 100%;
+        height: 40px;
+        position: absolute;
+        bottom: 40%;
+        left: 0;
+    }
+
+    .owl-prev,
+    .owl-next {
+        position: absolute;
+        left: 0;
+        transition: all 0.4s ease-in-out 0s;
+    }
+
+    .owl-next {
+        left: auto;
+        right: 0;
+    }
+
+    .owl-buttons .owl-prev:before,
+    .owl-buttons .owl-next:before {
+        content: "\f104";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        font-size: 60px;
+        font-weight: 900;
+        background-image: linear-gradient(to left bottom, #f4ff00, #fede00, #ffbd00, #ff9b00, #fc7900, #fc7900, #fc7900, #fc7900, #ff9b00, #ffbd00, #fede00, #f4ff00) !important;
+        line-height: 20px;
+        opacity: 0.8;
+    }
+
+    .owl-buttons .owl-next:before {
+        content: "\f105";
+    }
+
+    .owl-buttons .owl-prev:hover:before,
+    .owl-buttons .owl-next:hover:before {
+        opacity: 1;
+    }
+
+    .owl-theme .owl-controls .owl-buttons div {
+        background: transparent;
+    }
+
+    .owl-theme .owl-controls {
+        margin-top: 40px;
+    }
+
+        .owl-theme .owl-controls .owl-page span {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid red;
+            background: url("https://cdn2.iconfinder.com/data/icons/avatars-99/62/avatar-370-456322-512.png");
+            background-size: cover;
+            transition: all 0.3s ease-in-out 0s;
+        }
+
+        .owl-theme .owl-controls .owl-page:nth-child(2) span { 
+            background: url("https://cdn2.iconfinder.com/data/icons/avatars-99/62/avatar-370-456322-512.png");
+            background-size: cover; 
+        }
+
+        .owl-theme .owl-controls .owl-page:nth-child(3) span {
+            background: url("https://cdn2.iconfinder.com/data/icons/avatars-99/62/avatar-370-456322-512.png");
+            background-size: cover;
+        }
+
+        .owl-theme .owl-controls.clickable .owl-page:hover span {
+            opacity: 0.5;
+        }
+
+        .owl-theme .owl-controls .owl-page.active span,
+        .owl-theme .owl-controls .owl-page.active:hover span {
+            border-color: red;
+            opacity: 1;
+        }
+
+    @@media only screen and (max-width: 479px) {
+        .owl-buttons {
+            bottom: 30%;
+        }
+    }
+</style>
+
+<h1 class="custom-text text-center">Customer Review Section</h1>
+<div class="container shadow shadow-md">
+    
+    <div id="testimonial-slider" class="owl-carousel">
+        <div class="testimonial">
+            <p class="description">
+                It was the time past 1 year ago, I was having my exam but I was late, total time left was 15 minutes and I was impossible for me to reach on time by public vehicle so I thought to book Vcab.
+                He knew the short distance so that my time could be saved. This showed the cab driver was experise, knew directions.
+                The overall experiences were good.I will suggest everyone to travel with Vcabs.Thank you
+            </p>
+            <h3 class="title">Ramu</h3>
+        </div>
+
+        <div class="testimonial">
+            <p class="description">
+                It was a very good service for me , I was gone to the Bangalore and I was booked somany cab form Vcab website drivers was very fast and Safe driving it was a good experience for me thanks for himself and thanks for Vcab.
+            </p>
+            <h3 class="title">Pream</h3>
+        </div>
+
+        <div class="testimonial">
+            <p class="description">
+                Vcab provides you the comfortable pickup and drop facility. It is easy to book a ride just by mentioning the starting point and the destination point and by choosing the the car according to the rate. Vcabs has the music system facility in each car.
+            </p>
+            <h3 class="title">Kannan</h3>
+        </div>
+    </div>
+
+
+</div>
+
+

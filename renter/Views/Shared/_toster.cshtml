@@ -1,0 +1,43 @@
+﻿
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<style>
+	.toast-top-center {
+		margin-top:57px!important;
+	}	
+</style>
+<script>
+    	$(document).ready(function() {
+			//console.log(5);
+			console.log("@TempData["status"]");
+		  	toastr.options = {
+			  "closeButton": true,
+			  "debug": false,
+			  "newestOnTop": false,
+			  "progressBar": true,
+			  "positionClass": "toast-top-center",
+			  "preventDuplicates": false,
+			  "onclick": null,
+			  "showDuration": "300",
+			  "hideDuration": "1000",
+			  "timeOut": "5000",
+			  "extendedTimeOut": "1000",
+			  "showEasing": "swing",
+			  "hideEasing": "linear",
+			  "showMethod": "fadeIn",
+			  "hideMethod": "fadeOut"
+			}
+			if ("@TempData["status"]" === "success") {
+                toastr.success("@TempData["mes"]");
+			}
+			if ("@TempData["status"]" === "error") {
+                toastr.error("@TempData["mes"]");
+            }
+		  	// $("#more").click(function () {
+			  // toastr.success('This is an info toaster');
+			 	//console.log(55);
+			// });
+
+		});
+</script>

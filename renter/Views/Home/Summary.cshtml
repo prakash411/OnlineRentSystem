@@ -1,0 +1,90 @@
+﻿@model renter.Models.ViewModel.BookingVM;
+
+
+
+<form method="post">
+    <br />
+    <div class="backgroundWhiteBorder">
+        <div class="container">
+            <div class="card">
+                <div class="pt-1 pr-1 text-right">
+                    <a asp-action="Details" asp-route-id="@Model.property.PropertyId" class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-times fa-lg"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row">
+                            <div class="col-12 col-lg-7 pb-4">
+                                <div class="row">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="custom-text">User Details:</span>
+                                    </h4>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Name</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="@Model.user.UserName" type="text" class="form-control" />
+                                        <span asp-validation-for="@Model.user.UserName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Phone</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="user.PhoneNumber" type="text" class="form-control" />
+                                        <span asp-validation-for="user.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Email</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="user.Email" type="text" class="form-control" />
+                                        <span asp-validation-for="user.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-5 row">
+                                <div class="col-12">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="custom-text">Summary:</span>
+                                    </h4>
+                                    <ul class="list-group mb-3">
+                                        <input type="hidden" asp-for="@Model.property.OwnerName" value="@Model.property.OwnerName" />
+                                        <input type="hidden" asp-for="@Model.property.PropertyId" value="@Model.property.PropertyId" />
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="my-0">BHK : @Model.property.BHK BHK</h6>
+                                                <h6 class="my-0">Property Type : @Model.property.PropertyType</h6>
+                                                <h6 class="my-0">Furnishing : @Model.property.Furnishing</h6>
+                                                <h6 class="my-0">Price : <i class="fas fa-rupee-sign"></i> @Model.property.Price / month</h6>
+                                                
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 col-md-5 offset-md-7">
+                            <button type="submit" class="btn custom-btn form-control">Submit Inquiry</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

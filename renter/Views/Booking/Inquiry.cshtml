@@ -1,0 +1,81 @@
+﻿@model IEnumerable<renter.Models.Booking>
+
+
+
+<style>
+    th, td {
+        text-align: center;
+    }
+</style>
+<div class="container mt-3">
+
+    <div class="border p-3 bg-white">
+        <div class="d-flex justify-content-between mb-3">
+            <div class="p-2">
+                <h2 class="custom-text">Inquiry's List </h2>
+            </div>
+
+        </div>
+        @if (Model.Count() > 0)
+        {
+            <table id="tblData" class="table table-hover table-bordered pt-2" style="width:100%">
+                <thead>
+                    <tr class="custom-tbl" style="background-image: linear-gradient(to left top, #f4ff00,
+                        #fede00, #ffbd00, #ff9b00, #fc7900, #fc7900, #fc7900, #fc7900, #ff9b00, #ffbd00,
+                        #fede00, #f4ff00) !important;">
+                        <th>Booking Id</th>
+                        <th style="width: 170px;">Customer Name</th>
+                        <th style="width: 170px;">Customer Number</th>
+                        <th style="width: 300px;padding-bottom: 25px;">Customer Email</th>
+                        <th style="width: 145px;">Booking Status</th>
+                        <th>Property Info</th>
+                        <th style="width: 650px;padding-bottom: 25px;">Request Conformation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var obj in Model)
+                    {
+                        <tr>
+                            <td>@obj.BookingId</td>
+                            <td>@obj.CustomerName</td>
+                            <td>@obj.CustomerNumber</td>
+                            <td>@obj.CustomerEmail</td>
+                            <td>@obj.BookingStatus</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@obj.PropertyId" class="btn btn-outline-info">
+                                    <i class="fas fa-file-alt"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col m-1">
+                                        <a asp-action="Accept" asp-route-id="@obj.BookingId" class="btn btn-outline-success">
+                                            <i class="fas fa-check-circle"></i> &nbsp; Accept
+                                        </a>
+                                    </div>
+                                    <div class="col m-1">
+                                        <a asp-action="Denied" asp-route-id="@obj.BookingId" class="btn btn-outline-danger">
+                                            <i class="fas fa-times-circle"></i> &nbsp; Denied
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p> No Inquiry exists.</p>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tblData').DataTable();
+        });
+    </script>    
+}
