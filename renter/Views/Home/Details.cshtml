@@ -1,8 +1,10 @@
 ﻿@model renter.Models.Property
+@using System.Security.Claims;
 @{
     var x = Model.Image;
     string[] aList = x.Split("$");
     var crowl = "crowl" + Model.PropertyId;
+    var U_id = (ClaimsIdentity)User.Identity;
 }
 <div class="">
     <form method="post">
@@ -107,9 +109,19 @@
                         <div class="col-12 col-md-6 pb-1 ">
                             <a asp-action="Index" class="btn btn-outline-dark btn-square form-control btn-lg" style="height:50px;">Back to List</a>
                         </div>
-                        <div class="col-12 col-md-6 ">
-                            <a asp-action="Summary" asp-route-id="@Model.PropertyId" class="btn custom-btn form-control btn-lg" style="height:50px;">Book this Property</a>                            
-                        </div>
+                        @if (Model.OwnerName == U_id.Name)
+                        {
+                            <div class="col-12 col-md-6 ">
+                                <a asp-action="Summary" asp-route-id="@Model.PropertyId" class="btn custom-btn form-control btn-lg disabled" style="height:50px;">Book this Property</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-12 col-md-6 ">
+                                <a asp-action="Summary" asp-route-id="@Model.PropertyId" class="btn custom-btn form-control btn-lg " style="height:50px;">Book this Property</a>
+                            </div>
+                        }
+
                     </div>
                 </div>
             </div>
