@@ -27,7 +27,14 @@ namespace renter
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+            {
+                var connectionString =
+                    Configuration.GetConnectionString("DevConnection");
+
+                options.UseMySql(
+                    connectionString,
+                    ServerVersion.AutoDetect(connectionString));
+            });
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddHttpContextAccessor();
