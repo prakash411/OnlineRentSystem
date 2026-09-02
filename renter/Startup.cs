@@ -31,9 +31,9 @@ namespace renter
                 var connectionString =
                     Configuration.GetConnectionString("DevConnection");
 
-                options.UseMySql(
-                    connectionString,
-                    ServerVersion.AutoDetect(connectionString));
+                // Use the MySQL provider's simple connection method
+                // (MySql.EntityFrameworkCore exposes UseMySQL(extension) that accepts a connection string)
+                options.UseMySQL(connectionString);
             });
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
