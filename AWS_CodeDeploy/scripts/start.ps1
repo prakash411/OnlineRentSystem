@@ -1,4 +1,3 @@
-<powershell>
 Write-Output 'Starting IIS'
 Start-Service W3SVC
 Set-Service W3SVC -StartupType Automatic
@@ -9,4 +8,3 @@ New-NetFirewallRule `
     -Protocol TCP `
     -LocalPort 80 `
     -Action Allow
-</powershell>

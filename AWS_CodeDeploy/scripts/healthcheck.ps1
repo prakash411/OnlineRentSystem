@@ -1,3 +1,2 @@
-<powershell>
 Write-Output 'ValidateService completed successfully.'
-</powershell>
+Start-Service W3SVC
