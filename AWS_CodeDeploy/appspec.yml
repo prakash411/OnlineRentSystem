@@ -1,0 +1,32 @@
+version: 0.0
+os: windows
+
+files:
+  - source: \
+    destination: C:\MyApp
+
+hooks:
+  ApplicationStop:
+    - location: scripts\stop.ps1
+      timeout: 60
+      runas: Administrator
+
+  BeforeInstall:
+    - location: scripts\backup.ps1
+      timeout: 60
+      runas: Administrator
+
+  AfterInstall:
+    - location: scripts\install.ps1
+      timeout: 120
+      runas: Administrator
+
+  ApplicationStart:
+    - location: scripts\start.ps1
+      timeout: 60
+      runas: Administrator
+
+  ValidateService:
+    - location: scripts\healthcheck.ps1
+      timeout: 60
+      runas: Administrator
