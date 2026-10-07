@@ -1,10 +1,13 @@
-Write-Output 'Starting IIS'
-Start-Service W3SVC
-Set-Service W3SVC -StartupType Automatic
+$ErrorActionPreference = "Stop"
 
-New-NetFirewallRule `
-    -DisplayName "Allow HTTP 80" `
-    -Direction Inbound `
-    -Protocol TCP `
-    -LocalPort 80 `
-    -Action Allow
+try {
+    New-WebAppPool -Name "MyWebsitePool";
+    Set-ItemProperty "IIS:\AppPools\MyWebsitePool" -Name managedRuntimeVersion -Value "v4.0";
+    New-Website -Name "MyWebsite" -PhysicalPath "C:\MyApp" -ApplicationPool "MyWebsitePool" -Port 8080 -IPAddress "*"
+}
+catch {
+    Write-Error "ApplicationStart failed: $($_.Exception.Message)"
+    exit 1
+}
+
+exit 0
