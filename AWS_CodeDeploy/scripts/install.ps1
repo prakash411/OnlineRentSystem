@@ -3,8 +3,7 @@ $ErrorActionPreference = "Stop"
 Write-Host "Installing IIS"
 
 try {
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServerRole, IIS-WebServer, `
-        IIS-CommonHttpFeatures, IIS-ManagementConsole, IIS-ManagementScriptingTools -All
+    Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServerRole, IIS-WebServer, IIS-CommonHttpFeatures, IIS-ManagementConsole -All
 
     Write-Output 'Starting IIS'
     Start-Service W3SVC
