@@ -6,15 +6,14 @@ if ([IntPtr]::Size -eq 4 -and (Test-Path "$env:WINDIR\SysNative\WindowsPowerShel
 
 $ErrorActionPreference = "Stop"
 
-# Verify Web-Scripting-Tools is actually installed before calling WebAdministration
-$iisFeature = Get-WindowsFeature -Name Web-Scripting-Tools -ErrorAction SilentlyContinue
-if (-not ($iisFeature -and $iisFeature.Installed)) {
-    Write-Output "IIS Scripting Tools not installed; skipping ApplicationStop cleanup."
+Write-Output "IIS management WebAdministration tools check..."
+if (-not (Get-Module -ListAvailable -Name WebAdministration)) {
+    Write-Output "IIS management tools are not installed; skipping ApplicationStop cleanup."
     exit 0
 }
 
 try {
-    Write-Output "Importing WebAdministration..."
+    Write-Output "importing WebAdministration"
     Import-Module WebAdministration -ErrorAction Stop
 
     $siteName = "MyWebsite"
