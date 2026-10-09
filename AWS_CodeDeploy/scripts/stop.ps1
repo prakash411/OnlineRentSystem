@@ -1,11 +1,13 @@
 $ErrorActionPreference = "Stop"
 
+Write-Output "IIS management WebAdministration tools check..."
 if (-not (Get-Module -ListAvailable -Name WebAdministration)) {
     Write-Output "IIS management tools are not installed; skipping ApplicationStop cleanup."
     exit 0
 }
-
 try {
+    Write-Output "importing WebAdministration"
+
     Import-Module WebAdministration -ErrorAction Stop
 
     $siteName = "MyWebsite"
@@ -32,29 +34,7 @@ try {
     Write-Output 'ApplicationStop completed successfully.'
 }
 catch {
-    $errorRecord = $_
-    $errorText = @($errorRecord.ToString(), $errorRecord.Exception.ToString()) -join "`n"
-    $comRegistrationError = $false
-    $exception = $_.Exception
-    while ($exception) {
-        $errorText += "`n$($exception.Message)"
-        if ($exception.HResult -eq -2147221164) {
-            $comRegistrationError = $true
-            break
-        }
-        $exception = $exception.InnerException
-    }
-
-    if (-not $comRegistrationError) {
-        $comRegistrationError = $errorText -match '(?i)80040154|688EEEE5-6A7E-422F-B2E1-6AF00DC944A6'
-    }
-
-    if ($comRegistrationError) {
-        Write-Warning "IIS management COM components are not registered; skipping ApplicationStop cleanup."
-        exit 0
-    }
-
-    [Console]::Error.WriteLine("ApplicationStop failed: $($_.Exception.Message)")
+    Write-Error "ApplicationStop failed: $($_.Exception.Message)"
     exit 1
 }
 
