@@ -32,13 +32,19 @@ try {
     Write-Output 'ApplicationStop completed successfully.'
 }
 catch {
+    $comRegistrationError = $_.ToString() -match '(?i)80040154|688EEEE5-6A7E-422F-B2E1-6AF00DC944A6'
     $exception = $_.Exception
     while ($exception) {
         if ($exception.HResult -eq -2147221164) {
-            Write-Warning "IIS management COM components are not registered; skipping ApplicationStop cleanup."
-            exit 0
+            $comRegistrationError = $true
+            break
         }
         $exception = $exception.InnerException
+    }
+
+    if ($comRegistrationError) {
+        Write-Warning "IIS management COM components are not registered; skipping ApplicationStop cleanup."
+        exit 0
     }
 
     Write-Error "ApplicationStop failed: $($_.Exception.Message)"
