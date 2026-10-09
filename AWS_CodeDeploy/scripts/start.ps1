@@ -16,6 +16,7 @@ try {
     Set-ItemProperty "IIS:\AppPools\MyWebsitePool" -Name managedRuntimeVersion -Value "v4.0";
     New-Website -Name "MyWebsite" -PhysicalPath "C:\MyApp" -ApplicationPool "MyWebsitePool" -Port 8080 -IPAddress "*"
 
+    Write-Output "Starting dotnet-hosting installation..."
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $Url = "https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.12/dotnet-hosting-10.0.12-win.exe"
     $Installer = "$env:TEMP\dotnet-hosting-10.0.12-win.exe"

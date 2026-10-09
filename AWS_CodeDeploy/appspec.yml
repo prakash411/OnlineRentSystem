@@ -8,12 +8,12 @@ files:
 hooks:
   ApplicationStop:
     - location: scripts\stop.ps1
-      timeout: 300
+      timeout: 600
       runas: Administrator
 
   BeforeInstall:
     - location: scripts\backup.ps1
-      timeout: 300
+      timeout: 600
       runas: Administrator
 
   AfterInstall:
@@ -23,10 +23,10 @@ hooks:
 
   ApplicationStart:
     - location: scripts\start.ps1
-      timeout: 300
+      timeout: 600
       runas: Administrator
 
   ValidateService:
     - location: scripts\healthcheck.ps1
-      timeout: 300
+      timeout: 600
       runas: Administrator
