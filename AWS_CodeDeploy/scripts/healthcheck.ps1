@@ -1,6 +1,10 @@
+# Relaunch in 64-bit PowerShell if running in 32-bit (SysWOW64)
+if ([IntPtr]::Size -eq 4 -and (Test-Path "$env:WINDIR\SysNative\WindowsPowerShell\v1.0\powershell.exe")) {
+    & "$env:WINDIR\SysNative\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File $MyInvocation.MyCommand.Path
+    exit $LASTEXITCODE
+}
+
 $ErrorActionPreference = "Stop"
-
-
 
 try {
     Write-Output "Starting IIS configuration in 64-bit PowerShell."

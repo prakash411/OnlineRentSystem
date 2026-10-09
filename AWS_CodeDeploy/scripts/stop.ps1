@@ -27,8 +27,8 @@ try {
         Write-Output "Website '$siteName' does not exist. Skipping."
     }
 
-    if (Get-WebAppPool -Name $poolName -ErrorAction SilentlyContinue) {
-        Remove-WebAppPool -Name $poolName
+    if (Test-Path "IIS:\AppPools\$poolName") {
+        Remove-Item "IIS:\AppPools\$poolName" -Recurse
         Write-Output "App Pool '$poolName' removed."
     }
     else {
