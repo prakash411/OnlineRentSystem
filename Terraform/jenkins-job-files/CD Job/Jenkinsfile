@@ -1,0 +1,114 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(
+            name: 'S3_BUCKET',
+            defaultValue: '',
+            description: 's3 bucket name that contain artifact to deploy'
+        )
+
+        string(
+            name: 'S3_KEY',
+            defaultValue: '',
+            description: 's3 key of the artifact to deploy'
+        )
+    }
+
+    environment {
+        AWS_REGION = 'us-east-1'
+        CODEDEPLOY_APP = 'my_app'
+        CODEDEPLOY_GROUP = 'my_app_group'
+    }
+
+    stages {
+
+        stage('Prepare') {
+            steps {
+                script {
+                    echo "S3 Bucket: ${env.S3_BUCKET}"
+                    echo "S3 Key: ${env.S3_KEY}"
+                }
+            }
+        }
+
+        stage('Verify Artifact') {
+            steps {
+                sh "aws s3api head-object --bucket ${S3_BUCKET} --key ${S3_KEY} --region ${AWS_REGION}"
+            }
+        }
+
+        stage('Create CodeDeploy Deployment') {
+            steps {
+                script {
+                    env.DEPLOYMENT_ID = sh(
+                        script: """
+                            aws deploy create-deployment \
+                              --application-name ${CODEDEPLOY_APP} \
+                              --deployment-group-name ${CODEDEPLOY_GROUP} \
+                              --s3-location bucket=${S3_BUCKET},key=${S3_KEY},bundleType=zip \
+                              --region ${AWS_REGION} \
+                              --query deploymentId \
+                              --output text
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Deployment ID: ${env.DEPLOYMENT_ID}"
+                }
+            }
+        }
+
+        stage('Wait for Deployment') {
+            steps {
+                script {
+                    sh """
+                        aws deploy wait deployment-successful \
+                          --deployment-id ${DEPLOYMENT_ID} \
+                          --region ${AWS_REGION}
+                    """
+                }
+            }
+        }
+
+        stage('Deployment Status') {
+            steps {
+                sh """
+                    aws deploy get-deployment \
+                      --deployment-id ${DEPLOYMENT_ID} \
+                      --region ${AWS_REGION} \
+                      --query 'deploymentInfo.status' \
+                      --output text
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo """
+            Deployment successful!
+
+            Application: ${CODEDEPLOY_APP}
+            Deployment Group: ${CODEDEPLOY_GROUP}
+            Deployment ID: ${DEPLOYMENT_ID}
+            """
+        }
+
+        failure {
+            echo "CodeDeploy deployment failed."
+
+            script {
+                if (env.DEPLOYMENT_ID) {
+                    sh """
+                        aws deploy get-deployment \
+                          --deployment-id ${DEPLOYMENT_ID} \
+                          --region ${AWS_REGION} \
+                          --query 'deploymentInfo.{Status:status,Error:errorInformation,Description:description}' \
+                          --output json || true
+                    """
+                }
+            }
+        }
+    }
+}
