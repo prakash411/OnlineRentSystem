@@ -39,7 +39,7 @@ module "web_infra" {
   vpc_id = module.main_infra.vpc_id
   codedeploy_role_arn = module.main_infra.codedeploy_role_arn
   depends_on = [
-    module.main_infra
+    module.main_infra,module.jenkins_infra
   ]
 }
 
@@ -52,8 +52,9 @@ module "db_infra" {
   instance_type = var.instance_type
   iam_profile = module.main_infra.iam_profile
   vpc_id = module.main_infra.vpc_id
+  web_security_group_id = module.web_infra.web_security_group_id
   route53_hosted_zone_id = module.main_infra.route53_hosted_zone_id
   depends_on = [
-    module.main_infra
+    module.main_infra,module.jenkins_infra,module.web_infra
   ]
 }

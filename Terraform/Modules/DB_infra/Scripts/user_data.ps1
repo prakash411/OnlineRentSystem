@@ -1,10 +1,18 @@
 <powershell>
 $ErrorActionPreference = "Stop"
 Write-Output "Executing user data script..."
-Start-Service AmazonSSMAgent
 
-irm 'https://awscli.amazonaws.com/v2/install.ps1' -OutFile install.ps1; try { .\install.ps1 -System } finally { Remove-Item install.ps1 }
+$Url = "https://awscli.amazonaws.com/AWSCLIV2-2.37.13.msi"
+mkdir "C:\Software" -Force
+$Installer = "C:\Software\AWSCLIV2-2.37.13.msi"
+write-Output "Downloading AWS CLI..."
+Invoke-WebRequest -Uri $Url -OutFile $Installer
 
+write-Output "Installing AWS CLI..."
+Start-Process -FilePath "msiexec.exe" -ArgumentList "/i C:\Software\AWSCLIV2-2.37.13.msi /quiet" -Wait
+
+write-output "setting env path for AWS CLI..."
+$awsExe = "C:\Program Files\Amazon\AWSCLIV2\aws.exe"
 $awsPath = "C:\Program Files\Amazon\AWSCLIV2"
 $machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
 if ($machinePath -notlike "*$awsPath*") {
@@ -12,12 +20,13 @@ if ($machinePath -notlike "*$awsPath*") {
     $env:Path = "$env:Path;$awsPath"
 }
 
-Write-Output "Downloading MySQL..."
-$bucket = (aws s3api list-buckets --query "Buckets[?starts_with(Name, 'jenkins-bucket-')].Name" --output text) -split '\s+' | Select-Object -First 1
+
+Write-Output "Downloading mysql from s3..."
+$bucket = (&$awsExe s3api list-buckets --query "Buckets[?starts_with(Name, 'jenkins-bucket-')].Name" --output text) -split '\s+' | Select-Object -First 1
 
 if ($bucket) {
-    aws s3 cp "s3://$bucket/backup.sql" "C:\backup.sql"
-    aws s3 cp "s3://$bucket/mysql-8.4.11-winx64.zip" "C:\mysql-8.4.11-winx64.zip"
+    & $awsExe s3 cp "s3://$bucket/backup.sql" "C:\Software\backup.sql"
+    & $awsExe s3 cp "s3://$bucket/mysql-8.4.11-winx64.zip" "C:\Software\mysql-8.4.11-winx64.zip"
 } else {
     Write-Error "Bucket not found."
 }
@@ -25,7 +34,7 @@ if ($bucket) {
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 Write-Output "Extract and configure paths..."
-$Zip = "C:\mysql-8.4.11-winx64.zip"
+$Zip = "C:\Software\mysql-8.4.11-winx64.zip"
 Expand-Archive -Path $Zip -DestinationPath "C:\" -Force
 Rename-Item -Path "C:\mysql-8.4.11-winx64" -NewName "C:\mysql" -Force
 Remove-Item -Path $Zip -Force
@@ -66,19 +75,20 @@ if ($machinePath -notlike "*$mysqlBin*") {
 }
 
 
+Write-Output "Executing SQL commands...."
+New-NetFirewallRule -DisplayName "MySQL Port 3306" -Direction Inbound -LocalPort 3306 -Protocol TCP -Action Allow -Profile Any
+Get-Content -Path "C:\Software\backup.sql" | Set-Content -Path "C:\Software\backup_utf8.sql" -Encoding utf8
 
-$sqlCommands = @"
-SOURCE C:/backup.sql;
-CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'root';
-ALTER USER 'root'@'%' IDENTIFIED BY 'root';
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
-"@
+& "C:\mysql\bin\mysql.exe" -u root -e "SOURCE C:/Software/backup_utf8.sql;"
+& "C:\mysql\bin\mysql.exe" -u root -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'root';"
+& "C:\mysql\bin\mysql.exe" -u root -e "ALTER USER 'root'@'%' IDENTIFIED BY 'root';"
+& "C:\mysql\bin\mysql.exe" -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
+& "C:\mysql\bin\mysql.exe" -u root -e "FLUSH PRIVILEGES;"
+& "C:\mysql\bin\mysql.exe" -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
 
-& "C:\mysql\bin\mysql.exe" -u root -e "$sqlCommands"
-
-aws s3 cp 
+Write-Output "Starting Amazon SSM Agent...."
+Start-Service AmazonSSMAgent
 
 Write-Output "User data script executed successfully."
+
 </powershell>

@@ -15,8 +15,8 @@ resource "aws_vpc_security_group_ingress_rule" "MySQL" {
   ip_protocol       = "tcp"
   from_port         = 3306
   to_port           = 3306
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "to allow instance to connect to MySQL"
+  referenced_security_group_id = var.web_security_group_id
+  description       = "allow MySQL traffic from the web server security group"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "RDP" {

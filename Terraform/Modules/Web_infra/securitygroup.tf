@@ -46,15 +46,6 @@ resource "aws_vpc_security_group_ingress_rule" "jenkins" {
   description       = "to allow instance to connect to jenkins"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "MySQL" {
-  security_group_id = aws_security_group.web-sg.id
-  ip_protocol       = "tcp"
-  from_port         = 3306
-  to_port           = 3306
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "to allow instance to connect to MySQL"
-}
-
 resource "aws_vpc_security_group_ingress_rule" "iis" {
   security_group_id = aws_security_group.web-sg.id
   ip_protocol       = "tcp"

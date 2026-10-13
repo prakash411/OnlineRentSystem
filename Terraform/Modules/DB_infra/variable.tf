@@ -26,6 +26,10 @@ variable "vpc_id" {
   type = string
 }
 
+variable "web_security_group_id" {
+  type = string
+}
+
 variable "route53_hosted_zone_id" {
   type = string
 }
