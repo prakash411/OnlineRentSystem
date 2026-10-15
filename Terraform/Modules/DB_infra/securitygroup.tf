@@ -1,7 +1,7 @@
 resource "aws_security_group" "db-sg" {
-  name        = "db-sg"
-  description = "this sg allow for db servers"
-  vpc_id = var.vpc_id
+  name        = var.db-sg-object.sg_name
+  description = var.db-sg-object.sg_description
+  vpc_id      = var.db-sg-object.vpc_id
   egress {
     protocol    = "ALL"
     from_port   = "0"
@@ -10,31 +10,19 @@ resource "aws_security_group" "db-sg" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "MySQL" {
+resource "aws_vpc_security_group_ingress_rule" "db_ingress_rules" {
   security_group_id = aws_security_group.db-sg.id
-  ip_protocol       = "tcp"
-  from_port         = 3306
-  to_port           = 3306
-  referenced_security_group_id = var.web_security_group_id
-  description       = "allow MySQL traffic from the web server security group"
+  for_each = {
+    for rule in var.db-sg-object.ingress_rules :
+    "${rule.description}" => rule
+  }
+  ip_protocol                  = each.value.ip_protocol
+  from_port                    = each.value.from_port
+  to_port                      = each.value.to_port
+  cidr_ipv4                    = each.value.cidr_ipv4 != null ? each.value.cidr_ipv4 : null
+  referenced_security_group_id = each.value.referenced_security_group_id != null ? each.value.referenced_security_group_id : null
+  description                  = each.key
 }
 
-resource "aws_vpc_security_group_ingress_rule" "RDP" {
-  security_group_id = aws_security_group.db-sg.id
-  ip_protocol       = "tcp"
-  from_port         = 3389
-  to_port           = 3389
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "to allow instance to connect to RDP"
-}
-
-resource "aws_vpc_security_group_ingress_rule" "SSH" {
-  security_group_id = aws_security_group.db-sg.id
-  ip_protocol       = "tcp"
-  from_port         = 22
-  to_port           = 22
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "to allow instance to connect to SSH"
-}
 
 

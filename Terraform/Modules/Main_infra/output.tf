@@ -6,18 +6,6 @@ output "private_key" {
   value = local_file.my_private_key.content
 }
 
-output "vpc_id" {
-  value = data.aws_vpc.default.id
-}
-
-output "region" {
-  value = data.aws_region.current.region
-}
-
-output "account_id" {
-  value = data.aws_caller_identity.current.account_id
-}
-
 output "iam_profile" {
   value = aws_iam_instance_profile.ec2-profile.name
 }

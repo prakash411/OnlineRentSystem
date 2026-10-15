@@ -1,32 +1,29 @@
-variable "ami" {
-  type    = string
+variable "jenkins-ec2-object" {
+  type = object({
+    ami           = string
+    instance_type = string
+    aws_key       = string
+    private_key   = string
+    ec2_name      = string
+    subnet_id     = string
+    iam_profile   = string
+    bucket_name   = string
+  })
 }
 
-variable "instance_type" {
-  type    = string
-  default = "t3.medium"
-}
-
-variable "aws_key" {
-  type = string
-}
-
-variable "private_key" {
-  type = string
-}
-
-variable "ec2_name" {
-  type = string
-}
-
-variable "bucket_name" {
-  type = string  
-}
-
-variable "iam_profile" {
-  type = string
-}
-
-variable "vpc_id" {
-  type = string
+variable "jenkins-sg-object" {
+  type = object({
+    sg_name        = string
+    sg_description = string
+    vpc_id         = string
+    ingress_rules = list(
+      object({
+        ip_protocol = string
+        from_port   = number
+        to_port     = number
+        cidr_ipv4   = string
+        description = string
+      })
+    )
+  })
 }

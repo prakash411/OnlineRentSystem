@@ -1,7 +1,7 @@
 resource "aws_security_group" "jenkins-sg" {
-  name        = "jenkins-sg"
-  description = "this sg allow for jenkins servers"
-  vpc_id = var.vpc_id
+  name        = var.jenkins-sg-object.sg_name
+  description = var.jenkins-sg-object.sg_description
+  vpc_id      = var.jenkins-sg-object.vpc_id
   egress {
     protocol    = "ALL"
     from_port   = "0"
@@ -10,31 +10,17 @@ resource "aws_security_group" "jenkins-sg" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "SonarQube" {
+resource "aws_vpc_security_group_ingress_rule" "jenkins_ingress_rules" {
   security_group_id = aws_security_group.jenkins-sg.id
-  ip_protocol       = "tcp"
-  from_port         = 9000
-  to_port           = 9000
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "to allow instance to connect to SonarQube"
-}
-
-resource "aws_vpc_security_group_ingress_rule" "jenkins" {
-  security_group_id = aws_security_group.jenkins-sg.id
-  ip_protocol       = "tcp"
-  from_port         = 8080
-  to_port           = 8080
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "to allow instance to connect to jenkins"
-}
-
-resource "aws_vpc_security_group_ingress_rule" "SSH" {
-  security_group_id = aws_security_group.jenkins-sg.id
-  ip_protocol       = "tcp"
-  from_port         = 22
-  to_port           = 22
-  cidr_ipv4         = "0.0.0.0/0"
-  description       = "to allow instance to connect to SSH"
+  for_each = {
+    for rule in var.jenkins-sg-object.ingress_rules :
+    "${rule.description}" => rule
+  }
+  ip_protocol = each.value.ip_protocol
+  from_port   = each.value.from_port
+  to_port     = each.value.to_port
+  cidr_ipv4   = each.value.cidr_ipv4
+  description = each.key
 }
 
 

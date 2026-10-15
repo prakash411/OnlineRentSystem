@@ -1,4 +1,4 @@
 resource "aws_s3_bucket" "jenkins-bucket" {
-  bucket = var.bucket_name
-  
+  bucket = var.jenkins-ec2-object.bucket_name
+
 }

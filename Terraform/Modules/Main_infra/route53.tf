@@ -1,10 +1,10 @@
 resource "aws_route53_zone" "private" {
-  name = "internal.renter.com"
+  name = var.main-infra-object.route53_zone_name
 
   vpc {
-    vpc_id = data.aws_vpc.default.id
-    vpc_region = data.aws_region.current.region
+    vpc_id     = var.main-infra-object.vpc_id
+    vpc_region = var.main-infra-object.vpc_region
   }
 
-  
+
 }

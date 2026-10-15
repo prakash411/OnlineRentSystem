@@ -1,31 +1,42 @@
-variable "ami" {
-  type    = string
+variable "web-ec2-object" {
+  type = object({
+    ami           = string
+    instance_type = string
+    aws_key       = string
+    private_key   = string
+    ec2_name      = string
+    subnet_id     = string
+    iam_profile   = string
+  })
 }
 
-variable "instance_type" {
-  type    = string
+variable "web-sg-object" {
+  type = object({
+    sg_name        = string
+    sg_description = string
+    vpc_id         = string
+    ingress_rules = list(
+      object({
+        ip_protocol = string
+        from_port   = number
+        to_port     = number
+        cidr_ipv4   = string
+        description = string
+      })
+    )
+  })
 }
 
-variable "aws_key" {
-  type = string
-}
-
-variable "private_key" {
-  type = string
-}
-
-variable "ec2_name" {
-  type = string
-}
-
-variable "iam_profile" {
-  type = string
-}
-
-variable "vpc_id" {
-  type = string
-}
-
-variable "codedeploy_role_arn"{
-  type = string
+variable "codedeploy-object" {
+  type = object({
+    codedeploy_platform    = string
+    codedeploy_app_name    = string
+    deployment_group_name  = string
+    deployment_type        = string
+    codedeploy_role_arn    = string
+    ec2_tag_type           = string
+    ec2_tag_key            = string
+    ec2_tag_value          = string
+    deployment_config_type = string
+  })
 }
