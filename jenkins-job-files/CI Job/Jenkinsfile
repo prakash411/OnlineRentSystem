@@ -33,6 +33,19 @@ pipeline {
             }
         }
 
+        stage('Upload DB backup to S3') {
+            steps {
+                script {
+                    env.AWS_ACCOUNT_ID = sh(
+                        script: 'aws sts get-caller-identity --query Account --output text',
+                        returnStdout: true
+                    ).trim()
+                    env.S3_BUCKET = "jenkins-bucket-${env.AWS_ACCOUNT_ID}-us-east-1"
+                    sh "aws s3 cp Database/Renter_Db-mysql.sql s3://${env.S3_BUCKET}/backup.sql"
+                }
+            }
+        }
+
         // stage('SonarQube Begin') {
         //     steps {
         //         withSonarQubeEnv('SonarQube') {
@@ -97,7 +110,7 @@ pipeline {
             }
         }
 
-        stage('Upload to S3') {
+        stage('Upload Artifacts to S3') {
             steps {
                 script {
                     env.AWS_ACCOUNT_ID = sh(
@@ -106,12 +119,6 @@ pipeline {
                     ).trim()
                     env.S3_BUCKET = "jenkins-bucket-${env.AWS_ACCOUNT_ID}-us-east-1"
                     sh "aws s3 cp publish.zip s3://${env.S3_BUCKET}/${env.JOB_NAME}/"
-                    sh "aws s3 cp Database/Renter_Db-mysql.sql s3://${env.S3_BUCKET}/backup.sql"
-                    sh "wget https://cdn.mysql.com/Downloads/MySQL-8.4/mysql-8.4.11-winx64.zip -O ./mysql-8.4.11-winx64.zip"
-                    sh "aws s3 cp ./mysql-8.4.11-winx64.zip s3://${env.S3_BUCKET}/mysql-8.4.11-winx64.zip"                    
-                    sh "wget https://awscli.amazonaws.com/AWSCLIV2-2.37.13.msi?src=script-exe -O ./AWSCLIV2-2.37.13.msi"
-                    sh "aws s3 cp ./AWSCLIV2-2.37.13.msi s3://${env.S3_BUCKET}/AWSCLIV2-2.37.13.msi"
-                    sh "rm ./mysql-8.4.11-winx64.zip ./AWSCLIV2-2.37.13.msi"
                 }
             }
         }

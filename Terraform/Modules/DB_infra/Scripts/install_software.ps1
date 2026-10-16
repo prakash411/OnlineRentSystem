@@ -3,13 +3,12 @@ $ErrorActionPreference = "Stop"
 Write-Output "Executing user data script..."
 
 $Url = "https://awscli.amazonaws.com/AWSCLIV2-2.37.13.msi"
-mkdir "C:\Software" -Force
-$Installer = "C:\Software\AWSCLIV2-2.37.13.msi"
+$Installer = "C:\Windows\Temp\AWSCLIV2-2.37.13.msi"
 write-Output "Downloading AWS CLI..."
 Invoke-WebRequest -Uri $Url -OutFile $Installer
 
 write-Output "Installing AWS CLI..."
-Start-Process -FilePath "msiexec.exe" -ArgumentList "/i C:\Software\AWSCLIV2-2.37.13.msi /quiet" -Wait
+Start-Process -FilePath "msiexec.exe" -ArgumentList "/i C:\Windows\Temp\AWSCLIV2-2.37.13.msi /quiet" -Wait
 
 write-output "setting env path for AWS CLI..."
 $awsExe = "C:\Program Files\Amazon\AWSCLIV2\aws.exe"
@@ -21,20 +20,17 @@ if ($machinePath -notlike "*$awsPath*") {
 }
 
 
-Write-Output "Downloading mysql from s3..."
-$bucket = (&$awsExe s3api list-buckets --query "Buckets[?starts_with(Name, 'jenkins-bucket-')].Name" --output text) -split '\s+' | Select-Object -First 1
 
-if ($bucket) {
-    & $awsExe s3 cp "s3://$bucket/backup.sql" "C:\Software\backup.sql"
-    & $awsExe s3 cp "s3://$bucket/mysql-8.4.11-winx64.zip" "C:\Software\mysql-8.4.11-winx64.zip"
-} else {
-    Write-Error "Bucket not found."
-}
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+$Url = "https://cdn.mysql.com/Downloads/MySQL-8.4/mysql-8.4.11-winx64.zip"
+$Installer = "C:\Windows\Temp\mysql-8.4.11-winx64.zip"
+write-Output "Downloading mysql..."
+Invoke-WebRequest -Uri $Url -OutFile $Installer
+
 Write-Output "Extract and configure paths..."
-$Zip = "C:\Software\mysql-8.4.11-winx64.zip"
+$Zip = "C:\Windows\Temp\mysql-8.4.11-winx64.zip"
 Expand-Archive -Path $Zip -DestinationPath "C:\" -Force
 Rename-Item -Path "C:\mysql-8.4.11-winx64" -NewName "C:\mysql" -Force
 Remove-Item -Path $Zip -Force
@@ -77,9 +73,9 @@ if ($machinePath -notlike "*$mysqlBin*") {
 
 Write-Output "Executing SQL commands...."
 New-NetFirewallRule -DisplayName "MySQL Port 3306" -Direction Inbound -LocalPort 3306 -Protocol TCP -Action Allow -Profile Any
-Get-Content -Path "C:\Software\backup.sql" | Set-Content -Path "C:\Software\backup_utf8.sql" -Encoding utf8
+Get-Content -Path "C:\Windows\Temp\backup.sql" | Set-Content -Path "C:\Windows\Temp\backup_utf8.sql" -Encoding utf8
 
-& "C:\mysql\bin\mysql.exe" -u root -e "SOURCE C:/Software/backup_utf8.sql;"
+& "C:\mysql\bin\mysql.exe" -u root -e "SOURCE C:/Windows/Temp/backup_utf8.sql;"
 & "C:\mysql\bin\mysql.exe" -u root -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'root';"
 & "C:\mysql\bin\mysql.exe" -u root -e "ALTER USER 'root'@'%' IDENTIFIED BY 'root';"
 & "C:\mysql\bin\mysql.exe" -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"

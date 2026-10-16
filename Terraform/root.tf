@@ -70,6 +70,7 @@ module "web_infra" {
   web-ec2-object = {    
     ami           = var.default-objects.windows_ami
     instance_type = var.default-objects.instance_type
+    aws_region = data.aws_region.current.region
     aws_key       = module.main_infra.aws_key_name
     private_key   = module.main_infra.private_key
     ec2_name      = "${var.default-objects.web}-server"
@@ -94,7 +95,7 @@ module "web_infra" {
     deployment_config_type = var.codedeploy-object.deployment_config_type
   }
   depends_on = [
-    module.main_infra, module.jenkins_infra
+    module.main_infra
   ]
 }
 
@@ -134,6 +135,6 @@ module "db_infra" {
     ttl                    = var.db-route53-object.ttl
   }
   depends_on = [
-    module.main_infra, module.jenkins_infra, module.web_infra
+    module.main_infra
   ]
 }

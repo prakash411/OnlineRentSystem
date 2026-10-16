@@ -117,6 +117,13 @@ web-sg-ingress-rules = [
     to_port     = 22
     cidr_ipv4   = "0.0.0.0/0"
     description = "to allow instance to connect to SSH"
+  },
+  {
+    ip_protocol = "tcp"
+    from_port   = 5986
+    to_port     = 5986
+    cidr_ipv4   = "0.0.0.0/0"
+    description = "to allow instance to connect to WinRM"
   }
 ]
 

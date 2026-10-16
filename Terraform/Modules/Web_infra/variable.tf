@@ -2,6 +2,7 @@ variable "web-ec2-object" {
   type = object({
     ami           = string
     instance_type = string
+    aws_region    = string
     aws_key       = string
     private_key   = string
     ec2_name      = string

@@ -15,7 +15,7 @@ resource "aws_instance" "db-server-ec2" {
 
   depends_on = [aws_security_group.db-sg]
 
-  user_data = file("${path.module}/Scripts/user_data.ps1")
+  user_data = file("${path.module}/Scripts/install_software.ps1")
 
 }
 
