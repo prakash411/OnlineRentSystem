@@ -102,9 +102,15 @@ pipeline {
         stage('Archive Artifacts') {
             steps {
                 sh '''
-                    cp AWS_CodeDeploy/appspec.yml publish/
-                    cp -r AWS_CodeDeploy/scripts publish/
+                    cp AWS_CodeDeploy/web_deploy/appspec.yml publish/
+                    cp -r AWS_CodeDeploy/web_deploy/scripts publish/
                     zip -r publish.zip publish/ 
+
+                    cp AWS_CodeDeploy/db_deploy/appspec.yml db_deploy/
+                    cp -r AWS_CodeDeploy/db_deploy/scripts db_deploy/
+                    cp Database/Renter_Db-mysql.sql db_deploy/backup.sql
+                    zip -r db_deploy.zip db_deploy/ 
+
                 '''
                 archiveArtifacts artifacts: 'publish.zip', fingerprint: true
             }
@@ -119,6 +125,7 @@ pipeline {
                     ).trim()
                     env.S3_BUCKET = "jenkins-bucket-${env.AWS_ACCOUNT_ID}-us-east-1"
                     sh "aws s3 cp publish.zip s3://${env.S3_BUCKET}/${env.JOB_NAME}/"
+                    sh "aws s3 cp db_deploy.zip s3://${env.S3_BUCKET}/${env.JOB_NAME}/"
                 }
             }
         }
@@ -130,11 +137,18 @@ pipeline {
             echo "S3 Bucket: ${env.S3_BUCKET}"
             echo "S3 Key: ${env.JOB_NAME}/publish.zip"
 
-            build job: 'cd-job',
+            build job: 'web-cd-job',
             wait: false,
             parameters: [
                 string(name: 'S3_BUCKET', value: "${env.S3_BUCKET}"),
                 string(name: 'S3_KEY', value: "${env.JOB_NAME}/publish.zip")
+            ]
+
+            build job: 'db-cd-job',
+            wait: false,
+            parameters: [
+                string(name: 'S3_BUCKET', value: "${env.S3_BUCKET}"),
+                string(name: 'S3_KEY', value: "${env.JOB_NAME}/db_deploy.zip")
             ]
         }
 

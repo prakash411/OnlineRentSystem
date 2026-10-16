@@ -17,7 +17,12 @@ $service = Get-Service -Name "codedeployagent" -ErrorAction SilentlyContinue
 if (-not $service) {
 	Write-Output "Downloading the CodeDeploy agent MSI..."
 	$installerUri = "https://s3.$Region.amazonaws.com/aws-codedeploy-$Region/latestv2/codedeploy-agent.msi"
-	Invoke-WebRequest -Uri $installerUri -OutFile $installerPath -UseBasicParsing
+    # $Url = "https://cdn.mysql.com/Downloads/MySQL-8.4/mysql-8.4.11-winx64.zip"
+    # $Zip = "C:\Windows\Temp\mysql-8.4.11-winx64.zip"
+    $WebClient = New-Object System.Net.WebClient
+    $WebClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+    $WebClient.DownloadFile($installerUri, $installerPath)
+	# Invoke-WebRequest -Uri $installerUri -OutFile $installerPath -UseBasicParsing
 	if (-not (Test-Path $installerPath) -or (Get-Item $installerPath).Length -eq 0) {
 		throw "CodeDeploy agent MSI download is missing or empty."
 	}
