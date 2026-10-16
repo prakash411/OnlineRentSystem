@@ -79,7 +79,20 @@ variable "web-sg-ingress-rules" {
   )
 }
 
-variable "codedeploy-object" {
+variable "web-codedeploy-object" {
+  type = object({
+    codedeploy_platform    = string
+    codedeploy_app_name    = string
+    deployment_group_name  = string
+    deployment_type        = string
+    ec2_tag_type           = string
+    ec2_tag_key            = string
+    ec2_tag_value          = string
+    deployment_config_type = string
+  })
+}
+
+variable "db-codedeploy-object" {
   type = object({
     codedeploy_platform    = string
     codedeploy_app_name    = string

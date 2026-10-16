@@ -127,14 +127,25 @@ web-sg-ingress-rules = [
   }
 ]
 
-codedeploy-object = {
+web-codedeploy-object = {
   codedeploy_platform    = "Server"
-  codedeploy_app_name    = "my_app"
-  deployment_group_name  = "my_app_group"
+  codedeploy_app_name    = "renter_app"
+  deployment_group_name  = "renter_app_web_deploy"
   deployment_type        = "IN_PLACE"
   ec2_tag_type           = "KEY_AND_VALUE"
   ec2_tag_key            = "Name"
   ec2_tag_value          = "web-server"
+  deployment_config_type = "CodeDeployDefault.OneAtATime"
+}
+
+db-codedeploy-object = {
+  codedeploy_platform    = "Server"
+  codedeploy_app_name    = "renter_app"
+  deployment_group_name  = "renter_app_db_deploy"
+  deployment_type        = "IN_PLACE"
+  ec2_tag_type           = "KEY_AND_VALUE"
+  ec2_tag_key            = "Name"
+  ec2_tag_value          = "db-server"
   deployment_config_type = "CodeDeployDefault.OneAtATime"
 }
 

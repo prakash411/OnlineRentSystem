@@ -84,15 +84,15 @@ module "web_infra" {
     ingress_rules  = var.web-sg-ingress-rules
   }
   codedeploy-object = {
-    codedeploy_platform    = var.codedeploy-object.codedeploy_platform
-    codedeploy_app_name    = var.codedeploy-object.codedeploy_app_name
-    deployment_group_name  = var.codedeploy-object.deployment_group_name
-    deployment_type        = var.codedeploy-object.deployment_type
+    codedeploy_platform    = var.web-codedeploy-object.codedeploy_platform
+    codedeploy_app_name    = var.web-codedeploy-object.codedeploy_app_name
+    deployment_group_name  = var.web-codedeploy-object.deployment_group_name
+    deployment_type        = var.web-codedeploy-object.deployment_type
     codedeploy_role_arn    = module.main_infra.codedeploy_role_arn
-    ec2_tag_type           = var.codedeploy-object.ec2_tag_type
-    ec2_tag_key            = var.codedeploy-object.ec2_tag_key
-    ec2_tag_value          = var.codedeploy-object.ec2_tag_value
-    deployment_config_type = var.codedeploy-object.deployment_config_type
+    ec2_tag_type           = var.web-codedeploy-object.ec2_tag_type
+    ec2_tag_key            = var.web-codedeploy-object.ec2_tag_key
+    ec2_tag_value          = var.web-codedeploy-object.ec2_tag_value
+    deployment_config_type = var.web-codedeploy-object.deployment_config_type
   }
   depends_on = [
     module.main_infra
@@ -133,8 +133,20 @@ module "db_infra" {
     name                   = var.db-route53-object.name
     type                   = var.db-route53-object.type
     ttl                    = var.db-route53-object.ttl
+  }  
+  codedeploy-object = {
+    codedeploy_platform    = var.db-codedeploy-object.codedeploy_platform
+    codedeploy_app_name    = var.db-codedeploy-object.codedeploy_app_name
+    deployment_group_name  = var.db-codedeploy-object.deployment_group_name
+    deployment_type        = var.db-codedeploy-object.deployment_type
+    codedeploy_role_arn    = module.main_infra.codedeploy_role_arn
+    ec2_tag_type           = var.db-codedeploy-object.ec2_tag_type
+    ec2_tag_key            = var.db-codedeploy-object.ec2_tag_key
+    ec2_tag_value          = var.db-codedeploy-object.ec2_tag_value
+    deployment_config_type = var.db-codedeploy-object.deployment_config_type
   }
   depends_on = [
-    module.main_infra
+    module.main_infra,
+    module.web_infra
   ]
 }

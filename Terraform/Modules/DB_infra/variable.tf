@@ -36,3 +36,17 @@ variable "db-route53-object" {
     ttl                    = number
   })
 }
+
+variable "codedeploy-object" {
+  type = object({
+    codedeploy_platform    = string
+    codedeploy_app_name    = string
+    deployment_group_name  = string
+    deployment_type        = string
+    codedeploy_role_arn    = string
+    ec2_tag_type           = string
+    ec2_tag_key            = string
+    ec2_tag_value          = string
+    deployment_config_type = string
+  })
+}

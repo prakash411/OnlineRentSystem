@@ -3,7 +3,7 @@ resource "aws_codedeploy_app" "codedeploy_app" {
   name             = var.codedeploy-object.codedeploy_app_name
 }
 
-resource "aws_codedeploy_deployment_group" "codedeploy_group" {
+resource "aws_codedeploy_deployment_group" "web_codedeploy_group" {
   app_name              = aws_codedeploy_app.codedeploy_app.name
   deployment_group_name = var.codedeploy-object.deployment_group_name
   service_role_arn      = var.codedeploy-object.codedeploy_role_arn

@@ -4,4 +4,6 @@ resource "aws_route53_record" "db_route53_record" {
   type    = var.db-route53-object.type
   ttl     = var.db-route53-object.ttl
   records = ["${aws_instance.db-server-ec2.private_ip}"]
+
+  depends_on = [aws_instance.db-server-ec2]
 }

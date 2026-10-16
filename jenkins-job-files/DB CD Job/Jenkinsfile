@@ -17,8 +17,8 @@ pipeline {
 
     environment {
         AWS_REGION = 'us-east-1'
-        CODEDEPLOY_APP = 'my_app'
-        CODEDEPLOY_GROUP = 'my_app_group'
+        CODEDEPLOY_APP = 'renter_app'
+        CODEDEPLOY_GROUP = 'renter_app_web_deploy'
     }
 
     stages {
