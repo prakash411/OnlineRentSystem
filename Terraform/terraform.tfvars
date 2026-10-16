@@ -29,14 +29,16 @@ vpc-infra-object = {
   }
 }
 
-route53_zone_name  = "internal.renter.com"
-amazon_ami         = "ami-081b0a6eac00b4f53"
-windows_ami        = "ami-00d8aa800578d8b12"
-instance_type      = "t3.medium"
-jenkins-ec2_name   = "jenkins-server"
-sonarqube-ec2_name = "sonarqube-server"
-web-ec2_name       = "web-server"
-db-ec2_name        = "db-server"
+default-objects = {
+  windows_ami        = "ami-00d8aa800578d8b12"
+  amazon_linux_ami         = "ami-081b0a6eac00b4f53"
+  instance_type      = "t3.medium"
+  jenkins   = "jenkins"
+  sonarqube = "sonarqube"
+  web       = "web"
+  db        = "db" 
+  route53_zone_name  = "internal.renter.com"
+}
 
 
 jenkins-sg-ingress-rules = [

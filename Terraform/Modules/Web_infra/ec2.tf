@@ -12,7 +12,6 @@ resource "aws_instance" "web-server-ec2" {
     volume_size = 30
     volume_type = "gp3"
   }
-  get_password_data = true
 
   depends_on = [aws_security_group.web-sg]
 

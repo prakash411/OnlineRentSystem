@@ -28,12 +28,17 @@ variable "vpc-infra-object" {
   })
 }
 
-variable "route53_zone_name" {
-  type = string
-}
-
-variable "jenkins-ec2_name" {
-  type = string
+variable "default-objects" {
+  type = object({
+    windows_ami = string
+    amazon_linux_ami = string
+    instance_type = string
+    jenkins = string
+    sonarqube = string
+    web = string
+    db = string
+    route53_zone_name =string
+  })  
 }
 
 variable "jenkins-sg-ingress-rules" {
@@ -48,10 +53,6 @@ variable "jenkins-sg-ingress-rules" {
   )
 }
 
-variable "sonarqube-ec2_name" {
-  type = string
-}
-
 variable "sonarqube-sg-ingress-rules" {
   type = list(
     object({
@@ -64,9 +65,7 @@ variable "sonarqube-sg-ingress-rules" {
   )
 }
 
-variable "web-ec2_name" {
-  type = string
-}
+
 
 variable "web-sg-ingress-rules" {
   type = list(
@@ -93,9 +92,7 @@ variable "codedeploy-object" {
   })
 }
 
-variable "db-ec2_name" {
-  type = string
-}
+
 
 variable "db-sg-ingress-rules" {
   type = list(
@@ -118,18 +115,4 @@ variable "db-route53-object" {
   })
 }
 
-
-
-
-variable "amazon_ami" {
-  type = string
-}
-
-variable "instance_type" {
-  type = string
-}
-
-variable "windows_ami" {
-  type = string
-}
 

@@ -14,7 +14,7 @@ module "vpc_infra" {
 module "main_infra" {
   source = "./Modules/main_infra"
   main-infra-object = {
-    route53_zone_name = var.route53_zone_name
+    route53_zone_name = var.default-objects.route53_zone_name
     vpc_id            = module.vpc_infra.renter-vpc-id
     vpc_region        = data.aws_region.current.region
     account_id        = data.aws_caller_identity.current.account_id
@@ -26,18 +26,18 @@ module "main_infra" {
 module "jenkins_infra" {
   source = "./Modules/Jenkins_infra"
   jenkins-ec2-object = {
-    ami           = var.amazon_ami
-    instance_type = var.instance_type
+    ami           = var.default-objects.amazon_linux_ami
+    instance_type = var.default-objects.instance_type
     aws_key       = module.main_infra.aws_key_name
     private_key   = module.main_infra.private_key
-    ec2_name      = var.jenkins-ec2_name
+    ec2_name      = "${var.default-objects.jenkins}-server"
     subnet_id     = module.vpc_infra.renter-public-subnet-id
     iam_profile   = module.main_infra.iam_profile
     bucket_name   = local.jenkins_bucket_name
   }
   jenkins-sg-object = {
-    sg_name        = "Jenkins sg"
-    sg_description = "this sg allow for jenkins servers"
+    sg_name        = "${var.default-objects.jenkins}-sg"
+    sg_description = "this sg allow for ${var.default-objects.jenkins}-server"
     vpc_id         = module.vpc_infra.renter-vpc-id
     ingress_rules  = var.jenkins-sg-ingress-rules
   }
@@ -48,17 +48,17 @@ module "jenkins_infra" {
 module "sonarqube_infra" {
   source = "./Modules/Sonarqube_infra"
   sonarqube-ec2-object = {
-    ami           = var.amazon_ami
-    instance_type = var.instance_type
+    ami           = var.default-objects.amazon_linux_ami
+    instance_type = var.default-objects.instance_type
     aws_key       = module.main_infra.aws_key_name
     private_key   = module.main_infra.private_key
-    ec2_name      = var.sonarqube-ec2_name
+    ec2_name      = "${var.default-objects.sonarqube}-server"
     subnet_id     = module.vpc_infra.renter-public-subnet-id
     iam_profile   = module.main_infra.iam_profile
   }
   sonarqube-sg-object = {
-    sg_name        = "sonarqube sg"
-    sg_description = "this sg allow for sonarqube servers"
+    sg_name        = "${var.default-objects.sonarqube}-sg"
+    sg_description = "this sg allow for ${var.default-objects.sonarqube}-server"
     vpc_id         = module.vpc_infra.renter-vpc-id
     ingress_rules  = var.sonarqube-sg-ingress-rules
   }
@@ -67,18 +67,18 @@ module "sonarqube_infra" {
 
 module "web_infra" {
   source = "./Modules/Web_infra"
-  web-ec2-object = {
-    ami           = var.amazon_ami
-    instance_type = var.instance_type
+  web-ec2-object = {    
+    ami           = var.default-objects.windows_ami
+    instance_type = var.default-objects.instance_type
     aws_key       = module.main_infra.aws_key_name
     private_key   = module.main_infra.private_key
-    ec2_name      = var.web-ec2_name
+    ec2_name      = "${var.default-objects.web}-server"
     subnet_id     = module.vpc_infra.renter-public-subnet-id
     iam_profile   = module.main_infra.iam_profile
   }
   web-sg-object = {
-    sg_name        = "web sg"
-    sg_description = "this sg allow for web servers"
+    sg_name        = "${var.default-objects.web}-sg"
+    sg_description = "this sg allow for ${var.default-objects.web}-server"
     vpc_id         = module.vpc_infra.renter-vpc-id
     ingress_rules  = var.web-sg-ingress-rules
   }
@@ -100,18 +100,18 @@ module "web_infra" {
 
 module "db_infra" {
   source = "./Modules/DB_infra"
-  db-ec2-object = {
-    ami           = var.amazon_ami
-    instance_type = var.instance_type
+  db-ec2-object = {    
+    ami           = var.default-objects.windows_ami
+    instance_type = var.default-objects.instance_type
     aws_key       = module.main_infra.aws_key_name
     private_key   = module.main_infra.private_key
-    ec2_name      = var.db-ec2_name
-    subnet_id     = module.vpc_infra.renter-public-subnet-id
+    ec2_name      = "${var.default-objects.db}-server"
+    subnet_id     = module.vpc_infra.renter-private-subnet-id
     iam_profile   = module.main_infra.iam_profile
   }
   db-sg-object = {
-    sg_name        = "db sg"
-    sg_description = "this sg allow for db servers"
+    sg_name        = "${var.default-objects.db}-sg"
+    sg_description = "this sg allow for ${var.default-objects.db}-server"
     vpc_id         = module.vpc_infra.renter-vpc-id
     ingress_rules = concat(
       [
